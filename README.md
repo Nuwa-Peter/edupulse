@@ -1,0 +1,2 @@
+# edupulse
+School Management System
