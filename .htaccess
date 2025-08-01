@@ -1,0 +1,42 @@
+# EduPulse .htaccess file
+# Enables URL rewriting for the front-controller pattern
+
+<IfModule mod_rewrite.c>
+    # Turn on the rewrite engine
+    RewriteEngine On
+
+    # Set the base path for the rewrite rules.
+    # If your site is in a subdirectory (e.g., http://localhost/edupulse/),
+    # this should be set to /edupulse/
+    RewriteBase /edupulse/
+
+    # --- Rewrite Rules ---
+
+    # 1. Do not apply to existing files in the filesystem.
+    # This allows CSS, JS, and image files to be served directly.
+    RewriteCond %{REQUEST_FILENAME} !-f
+
+    # 2. Do not apply to existing directories in the filesystem.
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # 3. For all other requests, pass them to index.php.
+    # The [L] flag means this is the last rule to be processed.
+    RewriteRule . index.php [L]
+</IfModule>
+
+# --- Security and Configuration ---
+
+# Disable directory browsing for security
+Options -Indexes
+
+# Prevent access to sensitive files
+<FilesMatch "\.(sql|log|ini|env|phar)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Prevent access to the .htaccess file itself
+<Files .htaccess>
+    Order allow,deny
+    Deny from all
+</Files>
