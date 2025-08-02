@@ -25,9 +25,17 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 // --- 3. Application Constants ---
-// Define root path and base URL for consistent asset linking and file includes.
-define('APP_ROOT', dirname(__DIR__)); // The root directory of the project (edupulse/)
-define('BASE_URL', 'http://localhost'); // The base URL of the application
+// Define root path for consistent file includes.
+define('APP_ROOT', dirname(__DIR__));
+
+// Dynamically determine the BASE_URL to make the application portable.
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+$host = $_SERVER['HTTP_HOST'];
+$script_name = $_SERVER['SCRIPT_NAME'];
+// For /edupulse/index.php, dirname is /edupulse. For /index.php, it's /.
+$base_path = rtrim(dirname($script_name), '/');
+// If in a subdirectory, base_path will be non-empty (e.g., /edupulse). If at root, it will be empty.
+define('BASE_URL', $protocol . $host . $base_path);
 
 
 // --- 4. Database Configuration ---
