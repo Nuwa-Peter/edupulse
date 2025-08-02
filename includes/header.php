@@ -29,7 +29,7 @@ $userRole = $currentUser['role'] ?? 'Guest';
     <title>EduPulse - School Management System</title>
 
     <!-- Favicon -->
-    <!-- <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/favicon.png"> -->
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/edupulse_logo_logo.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,7 +55,7 @@ $userRole = $currentUser['role'] ?? 'Guest';
     <?php if (is_logged_in()): ?>
     <nav id="sidebar">
         <div class="sidebar-header">
-            <img src="<?= BASE_URL ?>/Uploads/logos/edupulse_logo.png" alt="EduPulse Logo" class="edupulse-logo-sidebar">
+            <img src="<?= BASE_URL ?>/assets/images/edupulse_logo_logo.png" alt="EduPulse Logo" class="edupulse-logo-sidebar">
             <h3>EduPulse</h3>
             <p class="text-light small"><?= htmlspecialchars($currentUser['school_name'] ?? 'Superadmin Panel'); ?></p>
         </div>

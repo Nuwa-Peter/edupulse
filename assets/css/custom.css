@@ -252,3 +252,20 @@ a[aria-expanded="true"] {
 [data-theme="dark"] .text-gray-800 {
     color: var(--dark-gray) !important;
 }
+
+[data-theme="dark"] .card .card-text,
+[data-theme="dark"] .list-group-item,
+[data-theme="dark"] .table,
+[data-theme="dark"] p {
+    color: var(--dark-gray);
+}
+
+[data-theme="dark"] .text-muted {
+    color: #bdc3c7 !important;
+}
+
+/* --- Logo Styles --- */
+.edupulse-logo-sidebar, .edupulse-logo-navbar {
+    border-radius: 50%;
+    object-fit: cover;
+}
