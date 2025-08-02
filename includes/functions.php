@@ -18,19 +18,8 @@ if (!defined('BASE_URL')) {
  */
 if (!function_exists('redirect')) {
     function redirect(string $url): void {
-        // --- TEMPORARY DEBUGGING CODE ---
-        echo "<pre>";
-        echo "<strong>DEBUG: Redirect Intercepted!</strong>\n";
-        echo "Destination: " . htmlspecialchars($url) . "\n\n";
-        echo "Current Session State:\n";
-        print_r($_SESSION);
-        echo "</pre>";
-        exit(); // Stop execution
-        // --- END DEBUGGING CODE ---
-
-        // Original code:
-        // header("Location: " . BASE_URL . $url);
-        // exit();
+        header("Location: " . BASE_URL . $url);
+        exit();
     }
 }
 
@@ -72,8 +61,8 @@ if (!function_exists('check_permission')) {
         }
 
         $user = get_current_user();
-        // Defensive check: ensure $user is an array and the 'role' key exists
-        if (!is_array($user) || !isset($user['role']) || !in_array($user['role'], $allowed_roles)) {
+        // Defensive check: ensure $user is an array and the 'role' key exists, and trim the role.
+        if (!is_array($user) || !isset($user['role']) || !in_array(trim($user['role']), $allowed_roles)) {
             // Redirect to login to break any potential loops.
             // A message can be displayed on the login page.
             $_SESSION['error_message'] = "You do not have permission to access that page, or your session has expired.";
