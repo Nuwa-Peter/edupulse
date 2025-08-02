@@ -47,7 +47,16 @@ define('PUSHER_CLUSTER', 'eu');
 // For AES-256 chat encryption.
 define('ENCRYPTION_KEY', 'EaPsgkL8J2gT9vYwZq4t7w!z%C*F-JaN');
 
-// --- 6. Database Connection (PDO) ---
+// --- 6. Email Configuration (for PHPMailer) ---
+define('SMTP_HOST', 'smtp.gmail.com');
+define('SMTP_PORT', 587);
+define('SMTP_USER', 'nuwapeter2013@gmail.com');
+define('SMTP_PASS', 'jxfi muyy mtwb wzjr');
+define('SMTP_SECURE', 'tls');
+define('EMAIL_FROM_ADDRESS', 'nuwapeter2013@gmail.com');
+define('EMAIL_FROM_NAME', 'EduPulse');
+
+// --- 7. Database Connection (PDO) ---
 // Establish a persistent connection to the database.
 $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
 $options = [

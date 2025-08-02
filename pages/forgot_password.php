@@ -46,17 +46,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Send the email using PHPMailer
                     $reset_link = BASE_URL . '/reset-password?token=' . $token;
 
-                    // This is placeholder email logic. SMTP needs to be configured in config.php
-                    $mail = new PHPMailer(true);
-                    // $mail->isSMTP();
-                    // ... (Full SMTP configuration would go here)
-                    $mail->setFrom('no-reply@edupulse.com', 'EduPulse System');
-                    $mail->addAddress($email);
-                    $mail->Subject = 'Password Reset Request for EduPulse';
-                    $mail->Body    = "Hello,\n\nYou requested a password reset. Please click the link below to reset your password. This link is valid for 1 hour.\n\n" . $reset_link . "\n\nIf you did not request this, please ignore this email.";
+                    // Send the email using PHPMailer
+                    $reset_link = BASE_URL . '/reset-password?token=' . $token;
 
-                    // In a real scenario, you'd have a try-catch block for $mail->send()
-                    // $mail->send();
+                    $mail = new PHPMailer(true);
+                    try {
+                        // Server settings from config.php
+                        $mail->isSMTP();
+                        $mail->Host       = SMTP_HOST;
+                        $mail->SMTPAuth   = true;
+                        $mail->Username   = SMTP_USER;
+                        $mail->Password   = SMTP_PASS;
+                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                        $mail->Port       = SMTP_PORT;
+
+                        //Recipients
+                        $mail->setFrom(EMAIL_FROM_ADDRESS, EMAIL_FROM_NAME);
+                        $mail->addAddress($email);
+
+                        // Content
+                        $mail->isHTML(true);
+                        $mail->Subject = 'Password Reset Request for EduPulse';
+                        $mail->Body    = "Hello,<br><br>You requested a password reset. Please click the link below to reset your password. This link is valid for 1 hour.<br><br><a href='{$reset_link}'>{$reset_link}</a><br><br>If you did not request this, please ignore this email.";
+                        $mail->AltBody = "Hello,\n\nYou requested a password reset. Please use the following link, which is valid for 1 hour: \n" . $reset_link . "\n\nIf you did not request this, please ignore this email.";
+
+                        $mail->send();
+                    } catch (Exception $e) {
+                        // Don't expose detailed error to user, but log it
+                        error_log("Mailer Error: " . $mail->ErrorInfo);
+                    }
                 }
             } catch (PDOException $e) {
                 // Log error, but don't expose it to the user
