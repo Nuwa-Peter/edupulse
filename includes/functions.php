@@ -136,4 +136,61 @@ function decrypt_data(string $ciphertext) {
     }
     return false;
 }
+
+// --- Functions moved from config.php ---
+
+/**
+ * Checks if a user is logged in.
+ * @return bool True if logged in, false otherwise.
+ */
+function is_logged_in() {
+    return isset($_SESSION['user_id']);
+}
+
+/**
+ * Gets the current logged-in user's data from the session.
+ * @return array|null The user data array or null if not logged in.
+ */
+function get_current_user() {
+    return $_SESSION['user'] ?? null;
+}
+
+/**
+ * Verifies the school's license status.
+ * This is a critical function for the commercial viability of the application.
+ *
+ * @param PDO $pdo The database connection object.
+ * @param int $school_id The ID of the school to check.
+ * @return bool True if the license is valid and active, false otherwise.
+ */
+function verify_school_license(PDO $pdo, int $school_id): bool {
+    // Superadmins do not belong to a school and bypass this check.
+    if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'Superadmin') {
+        return true;
+    }
+
+    try {
+        $stmt = $pdo->prepare(
+            "SELECT status, expiry_date FROM licenses WHERE school_id = :school_id"
+        );
+        $stmt->execute(['school_id' => $school_id]);
+        $license = $stmt->fetch();
+
+        if (!$license) {
+            // No license found for this school.
+            return false;
+        }
+
+        // Check if the license is active and not expired.
+        $is_active = $license['status'] === 'active';
+        $is_not_expired = strtotime($license['expiry_date']) >= time();
+
+        return $is_active && $is_not_expired;
+
+    } catch (PDOException $e) {
+        // Log the error in a real application
+        // error_log('License check failed: ' . $e->getMessage());
+        return false;
+    }
+}
 ?>
