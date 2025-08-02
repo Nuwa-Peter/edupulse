@@ -18,8 +18,19 @@ if (!defined('BASE_URL')) {
  */
 if (!function_exists('redirect')) {
     function redirect(string $url): void {
-        header("Location: " . BASE_URL . $url);
-        exit();
+        // --- TEMPORARY DEBUGGING CODE ---
+        echo "<pre>";
+        echo "<strong>DEBUG: Redirect Intercepted!</strong>\n";
+        echo "Destination: " . htmlspecialchars($url) . "\n\n";
+        echo "Current Session State:\n";
+        print_r($_SESSION);
+        echo "</pre>";
+        exit(); // Stop execution
+        // --- END DEBUGGING CODE ---
+
+        // Original code:
+        // header("Location: " . BASE_URL . $url);
+        // exit();
     }
 }
 
