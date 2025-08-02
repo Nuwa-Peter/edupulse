@@ -164,26 +164,6 @@ if (!function_exists('decrypt_data')) {
 // --- Functions moved from config.php ---
 
 /**
- * Checks if a user is logged in.
- * @return bool True if logged in, false otherwise.
- */
-if (!function_exists('is_logged_in')) {
-    function is_logged_in() {
-        return isset($_SESSION['user_id']);
-    }
-}
-
-/**
- * Gets the current logged-in user's data from the session.
- * @return array|null The user data array or null if not logged in.
- */
-if (!function_exists('get_current_user')) {
-    function get_current_user() {
-        return $_SESSION['user'] ?? null;
-    }
-}
-
-/**
  * Verifies the school's license status.
  * This is a critical function for the commercial viability of the application.
  *
