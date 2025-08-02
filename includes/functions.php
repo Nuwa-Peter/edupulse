@@ -63,9 +63,10 @@ if (!function_exists('check_permission')) {
         $user = get_current_user();
         // Defensive check: ensure $user is an array and the 'role' key exists
         if (!is_array($user) || !isset($user['role']) || !in_array($user['role'], $allowed_roles)) {
-            // You could redirect to a dedicated 'access-denied' page
-            $_SESSION['error_message'] = "You do not have permission to access this page.";
-            redirect('/dashboard');
+            // Redirect to login to break any potential loops.
+            // A message can be displayed on the login page.
+            $_SESSION['error_message'] = "You do not have permission to access that page, or your session has expired.";
+            redirect('/login');
         }
     }
 }
