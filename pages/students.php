@@ -137,11 +137,11 @@ require_once APP_ROOT . '/includes/header.php';
             <form method="POST" action="" enctype="multipart/form-data">
                 <div class="modal-body">
                     <input type="hidden" name="csrf_token" value="<?= generate_csrf_token() ?>">
-                    <p>Upload an Excel (.xlsx) or CSV file with student data. Please use the provided template.</p>
-                    <a href="<?= BASE_URL ?>/Uploads/templates/student_template.csv" class="btn btn-sm btn-outline-success mb-3"><i class="fas fa-file-download me-2"></i>Download Template</a>
+                    <p>Upload an Excel (.xlsx) file with student data. Please use the provided template.</p>
+                    <a href="<?= BASE_URL ?>/Uploads/templates/student_template.xlsx" class="btn btn-sm btn-outline-success mb-3"><i class="fas fa-file-download me-2"></i>Download Excel Template</a>
                     <div class="mb-3">
                         <label for="student_upload" class="form-label">Student Data File</label>
-                        <input type="file" class="form-control" id="student_upload" name="student_upload" accept=".xlsx,.csv" required>
+                        <input type="file" class="form-control" id="student_upload" name="student_upload" accept=".xlsx" required>
                     </div>
                 </div>
                 <div class="modal-footer">

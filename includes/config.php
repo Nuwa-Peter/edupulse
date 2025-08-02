@@ -38,16 +38,14 @@ define('DB_USER', 'root'); // Default XAMPP username
 define('DB_PASS', '');     // Default XAMPP password
 
 
-// --- 5. Third-Party Service Keys (Placeholders) ---
-// Add your API keys and secrets here.
-define('PUSHER_APP_ID', 'YOUR_PUSHER_APP_ID');
-define('PUSHER_APP_KEY', 'YOUR_PUSHER_APP_KEY');
-define('PUSHER_APP_SECRET', 'YOUR_PUSHER_APP_SECRET');
-define('PUSHER_CLUSTER', 'YOUR_PUSHER_CLUSTER');
+// --- 5. Third-Party Service Keys (Pusher & Encryption) ---
+define('PUSHER_APP_ID', '2031221');
+define('PUSHER_APP_KEY', 'a4ca373308c83595ce40');
+define('PUSHER_APP_SECRET', 'e5dc39b8c5e94f5c51b4');
+define('PUSHER_CLUSTER', 'eu');
 
-// For AES-256 chat encryption. Generate a secure key and store it safely.
-// You can generate one using: openssl_random_pseudo_bytes(32)
-define('ENCRYPTION_KEY', 'your-super-secret-32-byte-long-key');
+// For AES-256 chat encryption.
+define('ENCRYPTION_KEY', 'EaPsgkL8J2gT9vYwZq4t7w!z%C*F-JaN');
 
 // --- 6. Database Connection (PDO) ---
 // Establish a persistent connection to the database.
