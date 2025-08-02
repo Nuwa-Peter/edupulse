@@ -118,7 +118,8 @@ $is_logged_in = is_logged_in();
 $is_public_route = in_array($uri, $public_routes);
 
 // If user is logged in and tries to access a public page (like login), redirect to dashboard.
-if ($is_logged_in && $is_public_route) {
+// WORKAROUND: Added a condition to prevent redirecting from /login to /dashboard to break a stubborn redirect loop.
+if ($is_logged_in && $is_public_route && $uri !== '/login' && $uri !== '/') {
     redirect('/dashboard');
 }
 
