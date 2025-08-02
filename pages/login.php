@@ -14,8 +14,10 @@ $body_class = "login-page"; // Custom class for the body tag
 
 $error_message = '';
 
-// The authentication check is now handled by the central guardian in index.php.
-// This prevents redirect loops.
+// Redirect if already logged in
+if (is_logged_in()) {
+    redirect('/dashboard');
+}
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

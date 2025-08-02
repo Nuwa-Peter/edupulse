@@ -23,33 +23,11 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// --- Moved Functions (for early access) ---
-
-/**
- * Checks if a user is logged in.
- * @return bool True if logged in, false otherwise.
- */
-if (!function_exists('is_logged_in')) {
-    function is_logged_in() {
-        return isset($_SESSION['user_id']);
-    }
-}
-
-/**
- * Gets the current logged-in user's data from the session.
- * @return array|null The user data array or null if not logged in.
- */
-if (!function_exists('get_current_user')) {
-    function get_current_user() {
-        return $_SESSION['user'] ?? null;
-    }
-}
-
 
 // --- 3. Application Constants ---
 // Define root path and base URL for consistent asset linking and file includes.
 define('APP_ROOT', dirname(__DIR__)); // The root directory of the project (edupulse/)
-define('BASE_URL', 'http://localhost/edupulse'); // The base URL of the application
+define('BASE_URL', 'http://localhost'); // The base URL of the application
 
 
 // --- 4. Database Configuration ---

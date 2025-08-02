@@ -87,77 +87,54 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 $httpMethod = $_SERVER['REQUEST_METHOD'];
 
 // The URI needs to be stripped of the base path if EduPulse is not in the web root.
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$basePath = dirname($_SERVER['SCRIPT_NAME']);
-
-// If the base path is part of the URI, remove it.
-if ($basePath !== '/' && strpos($uri, $basePath) === 0) {
+$uri = $_SERVER['REQUEST_URI'];
+if (false !== $pos = strpos($uri, '?')) {
+    $uri = substr($uri, 0, $pos);
+}
+$uri = rawurldecode($uri);
+$basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+if ($basePath && strpos($uri, $basePath) === 0) {
     $uri = substr($uri, strlen($basePath));
 }
-if ($uri === false || $uri === '') {
+if (empty($uri)) {
     $uri = '/';
 }
 
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 
-
-// --- 4. AUTHENTICATION GUARDIAN ---
-// Centralized logic to handle authentication checks and redirects.
-
-// Public routes that do not require login.
-$public_routes = [
-    '/',
-    '/login',
-    '/register-school',
-    '/forgot-password',
-    '/reset-password',
-    '/offline'
-];
-
-$is_logged_in = is_logged_in();
-$is_public_route = in_array($uri, $public_routes);
-
-// If user is logged in and tries to access a public page (like login), redirect to dashboard.
-// WORKAROUND: Added a condition to prevent redirecting from /login to /dashboard to break a stubborn redirect loop.
-if ($is_logged_in && $is_public_route && $uri !== '/login' && $uri !== '/') {
-    redirect('/dashboard');
-}
-
-// If user is not logged in and tries to access a private page, redirect to login.
-if (!$is_logged_in && !$is_public_route) {
-    // You can store the intended URL in the session to redirect back after login if desired
-    // $_SESSION['intended_url'] = $uri;
-    $_SESSION['error_message'] = "You must be logged in to access that page.";
-    redirect('/login');
-}
-
-
-// --- 5. RENDER PAGE ---
-// Based on the routing result, render the page or show an error.
-
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
+        // Handle 404 Not Found
         http_response_code(404);
+        // A simple error page. In the future, we can route this to a dedicated error page.
         require __DIR__ . '/includes/header.php';
         echo '<div class="container"><h1>404 - Page Not Found</h1><p>The page you are looking for does not exist.</p></div>';
         require __DIR__ . '/includes/footer.php';
         break;
 
     case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
+        // Handle 405 Method Not Allowed
         http_response_code(405);
+        $allowedMethods = $routeInfo[1];
         require __DIR__ . '/includes/header.php';
         echo '<div class="container"><h1>405 - Method Not Allowed</h1><p>The requested method is not allowed for this route.</p></div>';
         require __DIR__ . '/includes/footer.php';
         break;
 
     case FastRoute\Dispatcher::FOUND:
+        // Route found, load the handler file.
         $handler = $routeInfo[1];
-        $vars = $routeInfo[2];
+        $vars = $routeInfo[2]; // Route parameters (e.g., /user/{id})
 
+        // Before including the page, check if it actually exists
         if (file_exists($handler)) {
+            // Make variables available to the included page
             extract($vars);
+            // The handler file (e.g., pages/dashboard.php) will now be executed.
+            // It is expected to include its own header/footer or be a full-page script.
             require $handler;
         } else {
+            // This case should ideally not be reached if routes are defined correctly.
             http_response_code(500);
             require __DIR__ . '/includes/header.php';
             echo '<div class="container"><h1>500 - Internal Server Error</h1><p>The page handler file is missing.</p></div>';
