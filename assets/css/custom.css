@@ -157,6 +157,21 @@ a[aria-expanded="true"] {
     object-fit: cover;
 }
 
+/* --- Global Header Bar Fixes --- */
+.global-header-bar {
+    background-color: var(--light-gray) !important;
+}
+
+html[data-theme="dark"] .global-header-bar {
+    background-color: var(--light-gray) !important;
+}
+
+/* Ensure switcher button is visible on dark backgrounds */
+.login-page .global-header-bar .btn-outline-secondary {
+    color: #fff;
+    border-color: #fff;
+}
+
 /* --- Card & Widget Styles --- */
 .card {
     border: none;
@@ -216,59 +231,56 @@ a[aria-expanded="true"] {
 }
 
 /* --- Dark Theme Styles --- */
-[data-theme="dark"] {
+html[data-theme="dark"] {
     --light-gray: #2c3e50; /* Dark background */
     --dark-gray: #ecf0f1;  /* Light text */
     --white: #34495e;      /* Darker card background */
     --medium-gray: #7f8c8d;
 }
 
-[data-theme="dark"] body {
+html[data-theme="dark"] body {
     background-color: var(--light-gray);
-    color: var(--dark-gray);
+    color: var(--dark-gray); /* Base text color for dark mode */
 }
 
-[data-theme="dark"] .card,
-[data-theme="dark"] .modal-content {
-    background-color: var(--white);
-    color: var(--dark-gray);
-}
-
-[data-theme="dark"] .card-header,
-[data-theme="dark"] .modal-header {
-    background-color: #2c3e50;
-    border-bottom-color: var(--medium-gray);
-}
-
-[data-theme="dark"] .table {
-    color: var(--dark-gray);
-}
-
-[data-theme="dark"] .list-group-item {
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .modal-content,
+html[data-theme="dark"] .list-group-item {
     background-color: var(--white);
     border-color: var(--medium-gray);
 }
 
-[data-theme="dark"] .text-gray-800,
-[data-theme="dark"] .text-gray-600,
-[data-theme="dark"] .text-gray-700 {
+html[data-theme="dark"] .card-header,
+html[data-theme="dark"] .modal-header {
+    background-color: #2c3e50;
+    border-bottom-color: var(--medium-gray);
+}
+
+/* Ensure all common text elements inherit the body's light color */
+html[data-theme="dark"] p,
+html[data-theme="dark"] span,
+html[data-theme="dark"] label,
+html[data-theme="dark"] strong,
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] h5,
+html[data-theme="dark"] h6,
+html[data-theme="dark"] .table,
+html[data-theme="dark"] .form-text,
+html[data-theme="dark"] .dropdown-item {
+    color: inherit;
+}
+
+/* Override specific bootstrap classes that have their own color settings */
+html[data-theme="dark"] .text-gray-800,
+html[data-theme="dark"] .text-muted {
     color: var(--dark-gray) !important;
 }
 
-[data-theme="dark"] .card,
-[data-theme="dark"] .card .card-text,
-[data-theme="dark"] .list-group-item,
-[data-theme="dark"] .table,
-[data-theme="dark"] p,
-[data-theme="dark"] div,
-[data-theme="dark"] span,
-[data-theme="dark"] label,
-[data-theme="dark"] strong {
-    color: var(--dark-gray) !important;
-}
-
-[data-theme="dark"] .text-muted {
-    color: #bdc3c7 !important;
+html[data-theme="dark"] .text-primary {
+    color: #5dade2 !important; /* A lighter blue for dark backgrounds */
 }
 
 /* --- Logo Styles --- */

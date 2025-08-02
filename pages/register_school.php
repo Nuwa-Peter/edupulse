@@ -210,6 +210,18 @@ require_once APP_ROOT . '/includes/header.php';
                                 </div>
                             </div>
 
+                            <h5 class="text-primary mt-4">School Logo</h5>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <label for="school_logo" class="form-label">Upload School Logo (Max 2MB)</label>
+                                    <input type="file" class="form-control" id="school_logo" name="school_logo" accept="image/png, image/jpeg">
+                                </div>
+                                <div class="col-md-4 mb-3 text-center">
+                                    <img id="logoPreview" src="https://via.placeholder.com/150?text=Logo+Preview" alt="Logo Preview" class="img-thumbnail" style="max-height: 100px;">
+                                </div>
+                            </div>
+
                             <div class="d-grid mt-4">
                                 <button type="submit" class="btn btn-primary btn-lg">Complete Registration</button>
                             </div>
@@ -225,3 +237,21 @@ require_once APP_ROOT . '/includes/header.php';
 </div>
 
 <?php require_once APP_ROOT . '/includes/footer.php'; ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const schoolLogoInput = document.getElementById('school_logo');
+    const logoPreview = document.getElementById('logoPreview');
+
+    schoolLogoInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                logoPreview.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+});
+</script>

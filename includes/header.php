@@ -50,6 +50,24 @@ $userRole = $currentUser['role'] ?? 'Guest';
 </head>
 <body>
 
+<!-- Global Header for Theme Switcher -->
+<div class="global-header-bar py-2 px-3 bg-light border-bottom">
+    <div class="d-flex justify-content-end">
+        <!-- Theme Switcher Dropdown -->
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="themeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-sun" id="theme-icon"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
+                <li><button class="dropdown-item" type="button" data-theme-value="light"><i class="fas fa-sun me-2"></i>Light</button></li>
+                <li><button class="dropdown-item" type="button" data-theme-value="dark"><i class="fas fa-moon me-2"></i>Dark</button></li>
+                <li><button class="dropdown-item" type="button" data-theme-value="auto"><i class="fas fa-desktop me-2"></i>Auto</button></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
 <div class="wrapper">
     <!-- Sidebar -->
     <?php if (is_logged_in()): ?>
@@ -72,7 +90,7 @@ $userRole = $currentUser['role'] ?? 'Guest';
     <?php endif; ?>
 
     <!-- Page Content -->
-    <div id="content" class="<?php if (!is_logged_in()) echo 'w-100'; // Full width for login page ?>">
+    <div id="content" class="<?php if (!is_logged_in()) echo 'w-100 p-0'; // Full width for login page ?>">
         <?php if (is_logged_in()): ?>
         <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
             <div class="container-fluid">
@@ -82,24 +100,12 @@ $userRole = $currentUser['role'] ?? 'Guest';
                     <span>Toggle Sidebar</span>
                 </button>
 
-                <form class="d-flex ms-auto me-3 search-bar">
+                <form class="d-flex search-bar ms-auto">
                     <input class="form-control me-2" type="search" placeholder="Search students, teachers..." aria-label="Search">
                     <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button>
                 </form>
 
-                <div class="ms-auto d-flex align-items-center">
-                    <!-- Theme Switcher Dropdown -->
-                    <div class="dropdown me-3">
-                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="themeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-sun" id="theme-icon"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
-                            <li><button class="dropdown-item" type="button" data-theme-value="light"><i class="fas fa-sun me-2"></i>Light</button></li>
-                            <li><button class="dropdown-item" type="button" data-theme-value="dark"><i class="fas fa-moon me-2"></i>Dark</button></li>
-                            <li><button class="dropdown-item" type="button" data-theme-value="auto"><i class="fas fa-desktop me-2"></i>Auto</button></li>
-                        </ul>
-                    </div>
-
+                <div class="ms-3 d-flex align-items-center">
                     <!-- User Profile Dropdown -->
                     <div class="dropdown user-profile-dropdown">
                         <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">

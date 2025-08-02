@@ -61,7 +61,8 @@ if (!function_exists('check_permission')) {
         }
 
         $user = get_current_user();
-        if (!$user || !in_array($user['role'], $allowed_roles)) {
+        // Defensive check: ensure $user is an array and the 'role' key exists
+        if (!is_array($user) || !isset($user['role']) || !in_array($user['role'], $allowed_roles)) {
             // You could redirect to a dedicated 'access-denied' page
             $_SESSION['error_message'] = "You do not have permission to access this page.";
             redirect('/dashboard');
