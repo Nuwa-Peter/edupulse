@@ -8,7 +8,8 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require_once '../vendor/autoload.php'; // Adjust path if needed, but router should handle it.
+// The main router 'index.php' already includes the autoloader.
+// require_once '../vendor/autoload.php'; // This line is incorrect and causes a fatal error.
 
 $page_title = "Forgot Password - EduPulse";
 $body_class = "login-page"; // Reuse login page styling

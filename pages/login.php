@@ -39,34 +39,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->execute(['email' => $email]);
                     $user = $stmt->fetch();
 
-                    if ($user) {
-                        if (password_verify($password, $user['password_hash'])) {
-                            // --- Login Successful ---
-                            if ($user['status'] !== 'active') {
-                                $error_message = "Your account is inactive or suspended. Please contact support.";
-                            } else {
-                                $license_valid = ($user['role'] === 'Superadmin') || verify_school_license($pdo, $user['school_id']);
-                                if (!$license_valid) {
-                                    $error_message = "Your school's license has expired or is invalid.";
-                                } else {
-                                    session_regenerate_id(true);
-                                    $_SESSION['user_id'] = $user['user_id'];
-                                    $_SESSION['user'] = [
-                                        'role' => $user['role'],
-                                        'first_name' => $user['first_name'],
-                                        'school_id' => $user['school_id'],
-                                        'school_name' => $user['school_name'],
-                                        'profile_photo_url' => $user['profile_photo_url']
-                                    ];
-                                    $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?")->execute([$user['user_id']]);
-                                    redirect('/dashboard');
-                                }
-                            }
+                    // Verify user and password
+                    if ($user && password_verify($password, $user['password_hash'])) {
+
+                        // Check if account is active
+                        if ($user['status'] !== 'active') {
+                            $error_message = "Your account is inactive or suspended. Please contact support.";
                         } else {
-                            $error_message = "DEBUG: User found, but password verification failed. Please check if the password 'password' matches the hash in your database.";
+                            // Check school license (if not a Superadmin)
+                            $license_valid = ($user['role'] === 'Superadmin') || verify_school_license($pdo, $user['school_id']);
+
+                            if (!$license_valid) {
+                                $error_message = "Your school's license has expired or is invalid. Please contact your Headteacher.";
+                            } else {
+                                // --- Login Successful ---
+                                // Regenerate session ID to prevent session fixation
+                                session_regenerate_id(true);
+
+                                // Store user data in session
+                                $_SESSION['user_id'] = $user['user_id'];
+                                $_SESSION['edupulse_id'] = $user['edupulse_id'];
+                                $_SESSION['user'] = [
+                                    'role' => $user['role'],
+                                    'first_name' => $user['first_name'],
+                                    'school_id' => $user['school_id'],
+                                    'school_name' => $user['school_name'],
+                                    'profile_photo_url' => $user['profile_photo_url']
+                                ];
+
+                                // Update last login timestamp
+                                $update_stmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = :user_id");
+                                $update_stmt->execute(['user_id' => $user['user_id']]);
+
+                                // Redirect to dashboard
+                                redirect('/dashboard');
+                            }
                         }
                     } else {
-                        $error_message = "DEBUG: No user found with the email '{$email}'. Please check if the user exists in your `users` table.";
+                        $error_message = "Invalid email or password.";
                     }
                 } catch (PDOException $e) {
                     // In production, log this error instead of showing it
