@@ -87,9 +87,13 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 $httpMethod = $_SERVER['REQUEST_METHOD'];
 
 // The URI needs to be stripped of the base path if EduPulse is not in the web root.
-$uri = rawurldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
-$basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-$uri = substr($uri, strlen($basePath));
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$basePath = dirname($_SERVER['SCRIPT_NAME']);
+
+// If the base path is part of the URI, remove it.
+if ($basePath !== '/' && strpos($uri, $basePath) === 0) {
+    $uri = substr($uri, strlen($basePath));
+}
 if ($uri === false || $uri === '') {
     $uri = '/';
 }
