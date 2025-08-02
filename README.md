@@ -55,6 +55,7 @@ Follow these steps carefully to set up the EduPulse system on your local machine
   extension=gd
   extension=zip
   extension=pdo_mysql
+  extension=openssl
   ```
 - Update the following values to handle large file uploads. You can use the search function (Ctrl+F) to find them.
   ```ini
