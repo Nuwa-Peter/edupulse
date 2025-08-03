@@ -7,82 +7,69 @@
  */
 
 // --- 1. Error Reporting & Environment ---
-// Set error reporting for development. In production, this should be logged, not displayed.
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// Set the default timezone for Uganda
+ini_set('display_errors', 1); // Set to 0 in production
 date_default_timezone_set('Africa/Kampala');
 
-
 // --- 2. Session Management ---
-// Start a secure session.
 if (session_status() == PHP_SESSION_NONE) {
-    // Use secure session cookie settings in a production environment
-    // session_set_cookie_params(['lifetime' => 86400, 'httponly' => true, 'samesite' => 'Lax']);
     session_start();
 }
 
-
 // --- 3. Application Constants ---
-// Define root path for consistent file includes.
 define('APP_ROOT', dirname(__DIR__));
-
-// Dynamically determine the BASE_URL to make the application portable.
-$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
-$host = $_SERVER['HTTP_HOST'];
-$script_name = $_SERVER['SCRIPT_NAME'];
-// For /edupulse/index.php, dirname is /edupulse. For /index.php, it's /.
-$base_path = rtrim(dirname($script_name), '/');
-// If in a subdirectory, base_path will be non-empty (e.g., /edupulse). If at root, it will be empty.
-define('BASE_URL', $protocol . $host . $base_path);
-
+define('BASE_URL', 'http://localhost/edupulse'); // Hardcoded for this specific deployment
 
 // --- 4. Database Configuration ---
-// Database credentials. Replace with your actual credentials.
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'edupulsedb');
-define('DB_USER', 'root'); // Default XAMPP username
-define('DB_PASS', '');     // Default XAMPP password
+define('DB_USER', 'root');
+define('DB_PASS', '');
 
+// --- 5. Third-Party Service Keys ---
+define('PUSHER_APP_ID', 'YOUR_PUSHER_APP_ID');
+define('PUSHER_APP_KEY', 'YOUR_PUSHER_APP_KEY');
+define('PUSHER_APP_SECRET', 'YOUR_PUSHER_APP_SECRET');
+define('PUSHER_CLUSTER', 'YOUR_PUSHER_CLUSTER');
+define('ENCRYPTION_KEY', 'some-long-random-string-for-aes-256');
 
-// --- 5. Third-Party Service Keys (Pusher & Encryption) ---
-define('PUSHER_APP_ID', '2031221');
-define('PUSHER_APP_KEY', 'a4ca373308c83595ce40');
-define('PUSHER_APP_SECRET', 'e5dc39b8c5e94f5c51b4');
-define('PUSHER_CLUSTER', 'eu');
-
-// For AES-256 chat encryption.
-define('ENCRYPTION_KEY', 'EaPsgkL8J2gT9vYwZq4t7w!z%C*F-JaN');
-
-// --- 6. Email Configuration (for PHPMailer) ---
-define('SMTP_HOST', 'smtp.gmail.com');
+// --- 6. Email Configuration (PHPMailer) ---
+define('SMTP_HOST', 'smtp.example.com');
 define('SMTP_PORT', 587);
-define('SMTP_USER', 'nuwapeter2013@gmail.com');
-define('SMTP_PASS', 'jxfi muyy mtwb wzjr');
+define('SMTP_USER', 'your-email@example.com');
+define('SMTP_PASS', 'your-email-password');
 define('SMTP_SECURE', 'tls');
-define('EMAIL_FROM_ADDRESS', 'nuwapeter2013@gmail.com');
+define('EMAIL_FROM_ADDRESS', 'noreply@edupulse.com');
 define('EMAIL_FROM_NAME', 'EduPulse');
 
 // --- 7. Database Connection (PDO) ---
-// Establish a persistent connection to the database.
 $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES   => false,
 ];
-
 try {
     $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
 } catch (\PDOException $e) {
     // In a real application, you would log this error and show a user-friendly message.
-    throw new \PDOException($e->getMessage(), (int)$e->getCode());
+    die("Database connection failed: " . $e->getMessage());
 }
 
+// --- 8. License Check ---
+function verify_school_license($pdo, $school_id) {
+    if (!$school_id) return false;
+    $stmt = $pdo->prepare("SELECT status, expiry_date FROM licenses WHERE school_id = :school_id");
+    $stmt->execute(['school_id' => $school_id]);
+    $license = $stmt->fetch();
 
-// --- 7. Core Functions ---
-// All helper functions are now in functions.php to prevent redeclaration errors.
+    if (!$license || $license['status'] !== 'active' || strtotime($license['expiry_date']) < time()) {
+        return false;
+    }
+    return true;
+}
+
+// --- 9. Core Functions ---
 require_once APP_ROOT . '/includes/functions.php';
 
 ?>

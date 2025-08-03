@@ -1,124 +1,74 @@
 <?php
 /**
- * EduPulse - Fee Management Page
- *
- * Allows Bursars and Headteachers to manage student fees and record payments.
- * Parents can view their child's fee status.
+ * EduPulse - Fee Management
  */
 
-$page_title = "Fee Management";
-check_permission(['Bursar', 'Headteacher', 'Parent']);
-$currentUser = get_current_user();
-$school_id = $currentUser['school_id'];
+require_once __DIR__ . '/../includes/config.php';
 
-// Fetch fee data for all students (Bursar/HT view)
-// In a real app, this would be paginated.
-try {
-    $stmt = $pdo->prepare(
-        "SELECT f.*, u.first_name, u.last_name, c.class_name
-         FROM fees f
-         JOIN students s ON f.student_id = s.student_id
-         JOIN users u ON s.user_id = u.user_id
-         JOIN classes c ON s.class_id = c.class_id
-         WHERE u.school_id = :school_id AND f.academic_year = :year AND f.term = :term"
-    );
-    // Using placeholders for current term/year
-    $stmt->execute(['school_id' => $school_id, 'year' => date('Y'), 'term' => '1']);
-    $fee_records = $stmt->fetchAll();
-} catch (PDOException $e) {
-    $fee_records = [];
-    $error_message = "Error fetching fee records.";
+// --- Authentication Check ---
+if (!is_logged_in() || !in_array(get_current_user()['role'], ['Headteacher', 'Bursar'])) {
+    redirect('/index.php?route=login');
 }
 
+$page_title = "Fee Management";
 require_once APP_ROOT . '/includes/header.php';
+
+// Placeholder data
+$students = [
+    ['id' => 4, 'name' => 'Peter Jones', 'fee_balance' => 150000],
+    ['id' => 5, 'name' => 'Aisha Nakato', 'fee_balance' => 0],
+];
+
 ?>
 
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Student Fee Management</h1>
-        <?php if ($currentUser['role'] !== 'Parent'): ?>
-        <div>
-            <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#setFeesModal">Set Term Fees</button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recordPaymentModal">Record Payment</button>
-        </div>
-        <?php endif; ?>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Fee Management</h1>
+    <div>
+        <a href="#" class="btn btn-sm btn-success shadow-sm"><i class="fas fa-file-excel fa-sm"></i> Import Payments</a>
+        <a href="#" class="btn btn-sm btn-info shadow-sm"><i class="fas fa-file-excel fa-sm"></i> Export Ledger</a>
     </div>
+</div>
 
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Fee Status for Term 1, <?= date('Y') ?></h6>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" width="100%" cellspacing="0">
-                    <thead>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Student Fee Balances</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Fee Balance (UGX)</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($students as $student): ?>
                         <tr>
-                            <th>Student Name</th>
-                            <th>Class</th>
-                            <th>Total Due</th>
-                            <th>Total Paid</th>
-                            <th>Balance</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($fee_records as $record): ?>
-                        <tr>
-                            <td><?= sanitize($record['first_name'] . ' ' . $record['last_name']) ?></td>
-                            <td><?= sanitize($record['class_name']) ?></td>
-                            <td><?= format_currency($record['total_due']) ?></td>
-                            <td><?= format_currency($record['total_paid']) ?></td>
-                            <td class="fw-bold <?= $record['balance'] > 0 ? 'text-danger' : 'text-success' ?>">
-                                <?= format_currency($record['balance']) ?>
-                            </td>
-                            <td><span class="badge bg-<?= $record['status'] === 'Paid' ? 'success' : ($record['status'] === 'Partially Paid' ? 'warning' : 'danger') ?>">
-                                <?= sanitize($record['status']) ?>
-                            </span></td>
+                            <td><?= sanitize($student['name']) ?></td>
+                            <td><?= format_currency($student['fee_balance']) ?></td>
                             <td>
-                                <button class="btn btn-sm btn-secondary">View Details</button>
+                                <?php if ($student['fee_balance'] <= 0): ?>
+                                    <span class="badge bg-success">Cleared</span>
+                                <?php else: ?>
+                                    <span class="badge bg-warning text-dark">Has Balance</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-primary" title="Add Payment"><i class="fas fa-plus"></i> Add Payment</a>
+                                <a href="#" class="btn btn-sm btn-info" title="View Ledger"><i class="fas fa-eye"></i> View Ledger</a>
                             </td>
                         </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-<!-- Modals for Bursar/HT -->
-<?php if ($currentUser['role'] !== 'Parent'): ?>
-<!-- Record Payment Modal -->
-<div class="modal fade" id="recordPaymentModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">Record a Payment</h5></div>
-            <div class="modal-body">
-                <p>Form to select a student, enter payment amount and method.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save Payment</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Set Term Fees Modal -->
-<div class="modal fade" id="setFeesModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">Set Fees for a Term</h5></div>
-            <div class="modal-body">
-                <p>Form to select a class, term, year, and enter the total fee amount.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Apply Fees</button>
-            </div>
-        </div>
-    </div>
-</div>
-<?php endif; ?>
 
-<?php require_once APP_ROOT . '/includes/footer.php'; ?>
+<?php
+require_once APP_ROOT . '/includes/footer.php';
+?>

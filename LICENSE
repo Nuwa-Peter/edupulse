@@ -1,48 +1,30 @@
 Proprietary License Agreement for EduPulse School Management System
-Copyright (c) 2025 [Developer Name/Organization]. All Rights Reserved.
 
-**NOTICE TO USER:**
+Copyright (c) 2025 [Your Developer Name/Organization]. All Rights Reserved.
 
-This is a commercial software product. Its use is governed by the terms of this license agreement. Please read this agreement carefully. By installing or using the EduPulse School Management System ("the Software"), you agree to be bound by the terms of this license. If you do not agree to these terms, do not install or use the Software.
+This is a legal agreement between you (either an individual or a single entity, hereafter "Licensee") and [Your Developer Name/Organization] (hereafter "Licensor") for the EduPulse School Management System software product, which includes computer software and may include associated media, printed materials, and "online" or electronic documentation (hereafter "Software").
 
-**1. DEFINITIONS**
+By installing, copying, or otherwise using the Software, you agree to be bound by the terms of this Agreement. If you do not agree to the terms of this Agreement, do not install or use the Software.
 
-- "The Software" refers to the EduPulse School Management System, including all its components, source code, documentation, and associated files.
-- "Licensee" refers to the paid school or entity that has been granted a license to use the Software.
-- "Developer" refers to [Developer Name/Organization].
+1.  **GRANT OF LICENSE.** Upon payment of the required fees, Licensor grants to Licensee a non-exclusive, non-transferable license to install and use one copy of the Software at a single school location. This license is for internal use by the Licensee's staff, students, and parents only.
 
-**2. LICENSE GRANT**
+2.  **RESTRICTIONS.**
+    a.  Licensee may not reverse-engineer, decompile, or disassemble the Software, except and only to the extent that such activity is expressly permitted by applicable law notwithstanding this limitation.
+    b.  Licensee may not rent, lease, or lend the Software to any third party.
+    c.  Licensee may not copy, modify, or create derivative works of the Software or any part thereof.
+    d.  Licensee may not remove or alter any copyright or proprietary notices on any and all copies of the Software.
+    e.  Licensee may not redistribute the Software or any part thereof.
 
-Upon full payment of the applicable license fees, the Developer grants the Licensee a non-exclusive, non-transferable, limited license to install and use the Software for internal school management purposes at a single school location. This license is contingent upon the Licensee's compliance with all terms and conditions of this agreement.
+3.  **PAYMENT TERMS.** Access to the Software is subject to timely payment of the agreed-upon license fees (either a one-time fee or a recurring subscription). Failure to make payment may result in the termination of this license and revocation of access to the Software.
 
-**3. LICENSE RESTRICTIONS**
+4.  **SUPPORT AND UPDATES.** Licensor may provide support and updates for the Software at its discretion. Access to support and updates may require payment of additional fees or an active subscription.
 
-The Licensee MAY NOT:
-a) Copy, modify, or create derivative works based on the Software, except for internal configuration purposes as described in the documentation.
-b) Redistribute, sell, rent, lease, sublicense, or otherwise transfer rights to the Software to any third party.
-c) Reverse-engineer, decompile, or disassemble the Software.
-d) Remove or alter any copyright notices, "Powered by EduPulse" attribution, or other proprietary markings on the Software's user interface.
-e) Use the Software to provide services to other schools or entities not covered by this license.
+5.  **ATTRIBUTION.** Licensee agrees to retain the "Powered by EduPulse" attribution and copyright notice in the user interface of the Software.
 
-**4. PAYMENT AND TERMS**
+6.  **NO WARRANTY.** The Software is provided "as is" without warranty of any kind. Licensor disclaims all warranties, whether express, implied, or statutory, including but not to the implied warranties of merchantability, fitness for a particular purpose, and non-infringement. The entire risk as to the quality and performance of the Software is with the Licensee.
 
-The license to use the Software is granted on a subscription basis (e.g., annually) or as a one-time fee, as agreed upon at the time of purchase. Failure to remit payment for a subscription renewal will result in the termination of this license, and the Software may cease to function until payment is received. The license is validated by a license key that is checked against the Developer's records.
+7.  **LIMITATION OF LIABILITY.** In no event shall Licensor be liable for any special, incidental, indirect, or consequential damages whatsoever (including, without limitation, damages for loss of business profits, business interruption, loss of business information, or any other pecuniary loss) arising out of the use of or inability to use the Software.
 
-**5. SUPPORT AND UPDATES**
+8.  **TERMINATION.** Without prejudice to any other rights, Licensor may terminate this Agreement if Licensee fails to comply with the terms and conditions of this Agreement. In such event, Licensee must destroy all copies of the Software and all of its component parts.
 
-Access to technical support and software updates is provided to Licensees with an active subscription or as part of a maintenance plan. The Developer is not obligated to provide support or updates to Licensees with expired or terminated licenses.
-
-**6. ATTRIBUTION**
-
-The user interface of the Software must at all times display the "Powered by EduPulse" notice and the "Copyright 2025 [Developer Name/Organization]" attribution in the footer or other designated area.
-
-**7. DISCLAIMER OF WARRANTY**
-
-THE SOFTWARE IS PROVIDED "AS IS," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE DEVELOPER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-**8. GOVERNING LAW**
-
-This agreement shall be governed by the laws of Uganda. Any disputes arising from this license agreement shall be resolved in the applicable courts of Uganda.
-
----
-For inquiries, please contact: [Your Website/Contact]
+This Agreement shall be governed by the laws of Uganda.

@@ -1,96 +1,80 @@
 <?php
 /**
  * EduPulse - Login Page
- *
- * This page handles user authentication for all roles that use email/password.
- * It also serves as the main landing page for the application.
  */
 
-// config.php is already included by index.php, which routes to this page.
-// functions.php is also expected to be available.
+// config.php is included by index.php, which routes to this page.
+// functions.php is also available.
 
-$page_title = "Login - EduPulse";
-$body_class = "login-page"; // Custom class for the body tag
-
-$error_message = '';
+$page_title = "Login";
+$body_class = "login-page"; // Custom class for the body
 
 // Redirect if already logged in
 if (is_logged_in()) {
-    redirect('/dashboard');
+    redirect('/index.php?route=dashboard');
 }
+
+$error_message = '';
 
 // Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // For now, we only handle email/password login. OTP would be a separate form/logic.
-    if (isset($_POST['login'])) {
-        // CSRF Check
-        if (!verify_csrf_token($_POST['csrf_token'])) {
-            $error_message = "Invalid request. Please try again.";
-        } else {
-            $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-            $password = $_POST['password'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
+    // For now, we only handle email/password login for non-student/parent roles
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $password = $_POST['password'];
 
-            if (empty($email) || empty($password)) {
-                $error_message = "Email and password are required.";
-            } else {
-                try {
-                    // Fetch user from database
-                    $stmt = $pdo->prepare("SELECT u.*, s.name as school_name FROM users u LEFT JOIN schools s ON u.school_id = s.school_id WHERE u.email = :email");
-                    $stmt->execute(['email' => $email]);
-                    $user = $stmt->fetch();
+    if (empty($email) || empty($password)) {
+        $error_message = "Email and password are required.";
+    } else {
+        try {
+            // Fetch user from database
+            $stmt = $pdo->prepare("SELECT u.*, s.name as school_name FROM users u LEFT JOIN schools s ON u.school_id = s.school_id WHERE u.email = :email");
+            $stmt->execute(['email' => $email]);
+            $user = $stmt->fetch();
 
-                    // Verify user and password
-                    if ($user && password_verify($password, $user['password_hash'])) {
+            // Verify user, password, and that the role is one that uses password login
+            $password_roles = ['Superadmin', 'Headteacher', 'Deputy Headteacher', 'DOS', 'Bursar'];
+            if ($user && in_array($user['role'], $password_roles) && password_verify($password, $user['password_hash'])) {
 
-                        // Check if account is active
-                        if ($user['status'] !== 'active') {
-                            $error_message = "Your account is inactive or suspended. Please contact support.";
-                        } else {
-                            // Check school license (if not a Superadmin)
-                            $license_valid = ($user['role'] === 'Superadmin') || verify_school_license($pdo, $user['school_id']);
-
-                            if (!$license_valid) {
-                                $error_message = "Your school's license has expired or is invalid. Please contact your Headteacher.";
-                            } else {
-                                // --- Login Successful ---
-                                // Regenerate session ID to prevent session fixation
-                                session_regenerate_id(true);
-
-                                // Store user data in session
-                                $_SESSION['user_id'] = $user['user_id'];
-                                $_SESSION['edupulse_id'] = $user['edupulse_id'];
-                                $_SESSION['user'] = [
-                                    'role' => $user['role'],
-                                    'first_name' => $user['first_name'],
-                                    'school_id' => $user['school_id'],
-                                    'school_name' => $user['school_name'],
-                                    'profile_photo_url' => $user['profile_photo_url']
-                                ];
-
-                                // Update last login timestamp
-                                $update_stmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = :user_id");
-                                $update_stmt->execute(['user_id' => $user['user_id']]);
-
-                                // Redirect to dashboard
-                                redirect('/dashboard');
-                            }
-                        }
-                    } else {
-                        $error_message = "Invalid email or password.";
-                    }
-                } catch (PDOException $e) {
-                    // In production, log this error instead of showing it
-                    $error_message = "A database error occurred. Please try again later.";
-                    // error_log("Login PDOException: " . $e->getMessage());
+                // Check if account is active
+                if ($user['status'] !== 'active') {
+                    $error_message = "Your account is inactive or suspended. Please contact support.";
                 }
+                // Check school license (if not a Superadmin)
+                else if ($user['role'] !== 'Superadmin' && !verify_school_license($pdo, $user['school_id'])) {
+                     $error_message = "Your school's license has expired or is invalid. Please contact your Headteacher.";
+                }
+                else {
+                    // --- Login Successful ---
+                    session_regenerate_id(true);
+
+                    // Store user data in session
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['user'] = [
+                        'user_id' => $user['user_id'],
+                        'edupulse_id' => $user['edupulse_id'],
+                        'role' => $user['role'],
+                        'first_name' => $user['first_name'],
+                        'last_name' => $user['last_name'],
+                        'school_id' => $user['school_id'],
+                        'school_name' => $user['school_name'],
+                        'profile_photo_url' => $user['profile_photo_url']
+                    ];
+
+                    // Update last login timestamp
+                    $update_stmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = :user_id");
+                    $update_stmt->execute(['user_id' => $user['user_id']]);
+
+                    // Redirect to dashboard
+                    redirect('/index.php?route=dashboard');
+                }
+            } else {
+                $error_message = "Invalid email or password.";
             }
+        } catch (PDOException $e) {
+            $error_message = "A database error occurred. Please try again later.";
+            // In production, log this error: error_log("Login PDOException: " . $e->getMessage());
         }
     }
-}
-
-// We need to override the body class defined in the header
-function set_body_class() {
-    return 'login-page';
 }
 
 // Include header
@@ -120,8 +104,7 @@ require_once APP_ROOT . '/includes/header.php';
                     <div class="alert alert-danger"><?= $error_message ?></div>
                 <?php endif; ?>
 
-                <form action="<?= BASE_URL ?>/login" method="POST">
-                    <input type="hidden" name="csrf_token" value="<?= generate_csrf_token() ?>">
+                <form action="<?= BASE_URL ?>/index.php?route=login" method="POST">
                     <div class="mb-3">
                         <label for="email" class="form-label">Email Address</label>
                         <input type="email" class="form-control" id="email" name="email" required>
@@ -131,10 +114,10 @@ require_once APP_ROOT . '/includes/header.php';
                         <input type="password" class="form-control" id="password" name="password" required>
                     </div>
                     <div class="d-grid">
-                        <button type="submit" name="login" class="btn btn-primary">Log In</button>
+                        <button type="submit" name="login" class="btn btn-primary w-100">Log In</button>
                     </div>
                     <div class="text-center mt-3">
-                        <a href="<?= BASE_URL ?>/forgot-password" class="text-decoration-none">Forgot Password?</a>
+                        <a href="<?= BASE_URL ?>/index.php?route=forgot_password" class="text-decoration-none">Forgot Password?</a>
                     </div>
                 </form>
                 <hr>
@@ -142,19 +125,19 @@ require_once APP_ROOT . '/includes/header.php';
                     <p class="mb-1">Students & Parents:</p>
                     <button class="btn btn-outline-secondary btn-sm" disabled>Login with EduPulse ID & OTP (Coming Soon)</button>
                 </div>
-                 <div class="text-center mt-4">
-                    <a href="<?= BASE_URL ?>/register-school" class="btn btn-success">Register a New School</a>
-                </div>
             </div>
         </div>
     </div>
 </div>
 
 <?php
-// We don't need the standard footer with attribution here, so we create a minimal one.
+// We don't need the standard footer for the login page to have the full-screen effect
+// but we need to close the tags from header.php
 ?>
     </div> <!-- Close #content -->
-</div> <!-- Close .wrapper -->
+    </div> <!-- Close #page-content-wrapper -->
+</div> <!-- Close #wrapper -->
+
 <!-- JS Includes -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

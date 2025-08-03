@@ -1,259 +1,88 @@
-/*
- * EduPulse Custom CSS
- * Author: Jules, AI Software Engineer
- *
- * This stylesheet defines the custom look and feel for the EduPulse system,
- * inspired by modern social media UIs with a clean, blue-and-white theme.
- */
+/* EduPulse Custom Stylesheet */
 
-/* --- Global Styles & Variables --- */
-:root {
-    --primary-blue: #007bff;
-    --light-blue: #e7f3ff;
-    --facebook-blue: #4267B2;
-    --dark-blue: #0056b3;
-    --light-gray: #f8f9fa;
-    --medium-gray: #dee2e6;
-    --dark-gray: #343a40;
-    --white: #ffffff;
-    --font-family: 'Roboto', sans-serif;
-}
-
+/* --- Global & Typography --- */
 body {
-    font-family: var(--font-family);
-    background-color: var(--light-gray);
-    color: var(--dark-gray);
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f2f5; /* Light gray background like Facebook */
 }
 
-/* --- Login Page Styles --- */
+/* --- Sidebar & Wrapper --- */
+#wrapper {
+    overflow-x: hidden;
+}
+
+#sidebar-wrapper {
+    min-height: 100vh;
+    margin-left: -15rem;
+    transition: margin .25s ease-out;
+}
+
+#sidebar-wrapper .sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #007bff;
+}
+
+#sidebar-wrapper .list-group {
+    width: 15rem;
+}
+
+#page-content-wrapper {
+    min-width: 100vw;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+}
+
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: -15rem;
+    }
+}
+
+/* --- Login Page Specific Styles --- */
 .login-page {
-    background: linear-gradient(to right, var(--facebook-blue), var(--primary-blue));
+    background-color: #4267B2; /* Facebook Blue */
+    color: #fff;
+}
+
+.login-page .navbar {
+    background-color: transparent !important;
 }
 
 .login-container {
-    max-width: 400px;
-    margin-top: 10vh;
+    background-color: #fff;
+    color: #333;
     padding: 2rem;
-    background: var(--white);
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-}
-
-.login-container .form-control {
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-}
-
-.login-container .btn-primary {
-    background-color: var(--facebook-blue);
-    border-color: var(--facebook-blue);
-    border-radius: 10px;
-    padding: 0.75rem;
-    font-weight: bold;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .login-hero {
-    color: var(--white);
+    padding-right: 3rem;
 }
 
-/* --- Main Application Wrapper --- */
-.wrapper {
-    display: flex;
-    width: 100%;
-    align-items: stretch;
-}
-
-/* --- Sidebar Styles --- */
-#sidebar {
-    min-width: 250px;
-    max-width: 250px;
-    background: var(--primary-blue);
-    color: var(--white);
-    transition: all 0.3s;
-}
-
-#sidebar.active {
-    margin-left: -250px;
-}
-
-#sidebar .sidebar-header {
-    padding: 20px;
-    background: var(--dark-blue);
-    text-align: center;
-}
-
-#sidebar .sidebar-header .edupulse-logo-sidebar {
-    width: 100px;
-    height: auto;
-    margin-bottom: 10px;
-}
-
-#sidebar ul.components {
-    padding: 20px 0;
-    border-bottom: 1px solid var(--dark-blue);
-}
-
-#sidebar ul p {
-    color: var(--white);
-    padding: 10px;
-}
-
-#sidebar ul li a {
-    padding: 15px 20px;
-    font-size: 1.1em;
-    display: block;
-    color: var(--light-blue);
-    text-decoration: none;
-    transition: all 0.2s;
-}
-
-#sidebar ul li a:hover {
-    color: var(--primary-blue);
-    background: var(--white);
-}
-
-#sidebar ul li.active>a,
-a[aria-expanded="true"] {
-    color: var(--white);
-    background: var(--dark-blue);
-}
-
-/* --- Main Content Styles --- */
-#content {
-    width: 100%;
-    padding: 20px;
-    min-height: 100vh;
-    transition: all 0.3s;
-    background-color: var(--light-gray);
-}
-
-.main-content {
-    flex-grow: 1;
-    padding: 2rem;
-}
-
-/* --- Navbar Styles --- */
-.navbar {
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.navbar-brand .edupulse-logo-navbar {
-    height: 40px;
-    width: auto;
-}
-
-.navbar .search-bar {
-    min-width: 300px;
-}
-
-.navbar .user-profile-dropdown img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-/* --- Global Header Bar Fixes --- */
-.global-header-bar {
-    background-color: var(--light-gray) !important;
-}
-
-html[data-theme="dark"] .global-header-bar {
-    background-color: var(--light-gray) !important;
-}
-
-/* Ensure switcher button is visible on dark backgrounds */
-.login-page .global-header-bar .btn-outline-secondary {
-    color: #fff;
-    border-color: #fff;
-}
-
-/* --- Card & Widget Styles --- */
-.card {
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.card-header {
-    background-color: var(--white);
-    border-bottom: 1px solid var(--medium-gray);
-    font-weight: bold;
-    color: var(--primary-blue);
-}
-
+/* --- General Components --- */
 .btn-primary {
-    background-color: var(--primary-blue);
-    border-color: var(--primary-blue);
-    border-radius: 8px;
+    background-color: #007bff;
+    border-color: #007bff;
+    border-radius: 20px; /* Rounded buttons */
+    padding: 10px 20px;
+    font-weight: 500;
 }
+
 .btn-primary:hover {
-    background-color: var(--dark-blue);
-    border-color: var(--dark-blue);
-}
-
-/* --- Story Bar --- */
-.story-bar {
-    display: flex;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    white-space: nowrap;
-}
-.story {
-    display: inline-block;
-    margin-right: 15px;
-    text-align: center;
-}
-.story .story-photo {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 3px solid var(--primary-blue);
-    padding: 2px;
-    object-fit: cover;
-}
-
-/* --- Media Queries for Mobile --- */
-@media (max-width: 768px) {
-    #sidebar {
-        margin-left: -250px;
-    }
-    #sidebar.active {
-        margin-left: 0;
-    }
-    #sidebarCollapse span {
-        display: none;
-    }
-}
-
-/* --- Dark Theme Styles --- */
-[data-theme="dark"] {
-    --bs-body-bg: #2c3e50;
-    --bs-body-color: #ecf0f1;
-    --bs-tertiary-bg: #34495e;
-    --bs-border-color: #7f8c8d;
-}
-
-[data-theme="dark"] .card,
-[data-theme="dark"] .modal-content,
-[data-theme="dark"] .list-group-item {
-    background-color: var(--bs-tertiary-bg);
-}
-
-[data-theme="dark"] .text-primary {
-    color: #5dade2 !important;
-}
-
-[data-theme="dark"] .text-muted {
-    color: #bdc3c7 !important;
-}
-
-/* --- Logo Styles --- */
-.edupulse-logo-sidebar, .edupulse-logo-navbar {
-    border-radius: 50%;
-    object-fit: cover;
+    background-color: #0069d9;
+    border-color: #0062cc;
 }
